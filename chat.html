@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>chat</title>
+    <style>
+        #messages {
+            width: 600px;
+            height: 600px;
+            border: #333 1px solid;
+            padding: 5px 10px;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="messages"></div>
+<div id="id"></div>
+<form id="form">
+    <label for="to">To ID: </label><input type="text" id="to" size="5" value="0">
+    <label for="content">Content: </label><input type="text" id="content" size="50">
+    <input type="submit" value="Send">
+</form>
+</body>
+<script>
+    var messages = document.getElementById("messages")
+    function appendMessage(message) {
+        var doScroll = messages.scrollTop > messages.scrollHeight - messages.clientHeight - 1;
+        messages.appendChild(message);
+        if (doScroll) {
+            messages.scrollTop = messages.scrollHeight - messages.clientHeight;
+        }
+    }
+
+    var websocket = new WebSocket("ws://" + document.location.host + "/ws");
+    websocket.onclose = function (evt) {
+        console.log(evt.code);
+        console.log(evt.reason);
+        var item = document.createElement("div");
+        item.innerHTML = "<strong>Connection closed.</strong>"
+        appendMessage(item)
+    };
+    websocket.onmessage = function (evt) {
+        console.log(evt.data);
+        var msg = JSON.parse(evt.data)
+        if (msg.to === msg.from && msg.content === "issue id") {
+            document.getElementById("id").append("My ID: " + msg.to)
+        } else if (msg.to === 0) {
+            var item = document.createElement("div");
+            item.innerHTML = "<strong>" + msg.from + "</strong> say to everyone: " + msg.content;
+            appendMessage(item);
+        } else {
+            var item = document.createElement("div");
+            item.innerHTML = "<strong>" + msg.from + "</strong> say to you: " + msg.content;
+            appendMessage(item);
+        }
+    };
+
+    var to = document.getElementById("to");
+    var content = document.getElementById("content");
+    document.getElementById("form").onsubmit = function () {
+        if (! websocket) {
+            return false
+        }
+
+        if (! to.value) {
+            return false
+        }
+
+        if (! content.value) {
+            return false
+        }
+
+        if (to.value === "0") {
+            var item = document.createElement("div");
+            item.innerHTML = "You say to everyone: " + content.value;
+            appendMessage(item);
+        } else {
+            var item = document.createElement("div");
+            item.innerHTML = "You say to <strong>" + to.value + "</strong>: " + content.value;
+            appendMessage(item);
+        }
+
+        websocket.send(JSON.stringify({
+            "to": parseInt(to.value),
+            "content": content.value
+        }))
+        content.value = ""
+        return false
+    }
+</script>
+</html>

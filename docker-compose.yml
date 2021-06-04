@@ -5,6 +5,7 @@ services:
     working_dir: /home/www-data
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - ./chat1.html:/home/chat.html
     ports:
       - 127.0.0.1:9999:8888
     depends_on:
