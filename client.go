@@ -53,6 +53,11 @@ func (c *Client) read() {
 			break
 		}
 
+		if message.To == c.id {
+			continue
+		}
+
+		message.From = c.id
 		err = publish(message)
 		if err != nil {
 			break
