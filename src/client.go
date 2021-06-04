@@ -69,7 +69,7 @@ func (c *Client) read() {
 // write 用来发送消息给客户端，消息为 json 格式
 // 从 messages 管道里获取消息，专属于本客户端的消息
 func (c *Client) write() {
-	ticker := time.NewTicker(60 * time.Second)
+	ticker := time.NewTicker(50 * time.Second)
 	defer func() {
 		ticker.Stop()
 		_ = c.conn.Close()
