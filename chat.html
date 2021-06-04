@@ -51,11 +51,11 @@
             }))
         } else if (msg.to === 0) {
             var item = document.createElement("div");
-            item.innerHTML = "<strong>" + msg.from + "</strong> say to everyone: " + msg.content;
+            item.innerHTML = "<strong>" + msg.from + "</strong> talk to everyone: " + msg.content;
             appendMessage(item);
         } else {
             var item = document.createElement("div");
-            item.innerHTML = "<strong>" + msg.from + "</strong> say to you: " + msg.content;
+            item.innerHTML = "<strong>" + msg.from + "</strong> talk to me: " + msg.content;
             appendMessage(item);
         }
     };
@@ -77,11 +77,11 @@
 
         if (to.value === "0") {
             var item = document.createElement("div");
-            item.innerHTML = "You say to everyone: " + content.value;
+            item.innerHTML = "I talk to everyone: " + content.value;
             appendMessage(item);
         } else {
             var item = document.createElement("div");
-            item.innerHTML = "You say to <strong>" + to.value + "</strong>: " + content.value;
+            item.innerHTML = "I talk to <strong>" + to.value + "</strong>: " + content.value;
             appendMessage(item);
         }
 
