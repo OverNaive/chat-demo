@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    working_dir: /home/www-data
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf
+    ports:
+      - 127.0.0.1:9999:8888
+    depends_on:
+      - chat1
+      - chat2
+    restart: always
+    container_name: chat-nginx
+
+  chat1:
+    image: chat:demo
+    depends_on:
+      - redis
+    restart: always
+    container_name: chat1
+
+  chat2:
+    image: chat:demo
+    depends_on:
+      - redis
+    restart: always
+    container_name: chat2
+
+  redis:
+    image: redis:alpine
+    restart: always
+    container_name: chat-redis
