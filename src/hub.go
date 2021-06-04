@@ -26,7 +26,8 @@ func (h *Hub) run() {
 				close(client.messages)
 			}
 		case message := <- h.messages:
-			if message.To == 0 {
+			switch message.To {
+			case 0:
 				// 发送给所有人，除了自己
 				for _, client := range h.clients {
 					if message.From == client.id {
@@ -40,9 +41,13 @@ func (h *Hub) run() {
 						delete(h.clients, client.id)
 					}
 				}
-			} else if client, ok := h.clients[message.To]; ok {
-				// 发送给指定的人
-				client.messages <- message
+			case -1:
+				// nothing to do
+			default:
+				if client, ok := h.clients[message.To]; ok {
+					// 发送给指定的人
+					client.messages <- message
+				}
 			}
 		}
 	}

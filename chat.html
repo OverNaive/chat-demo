@@ -42,8 +42,13 @@
     websocket.onmessage = function (evt) {
         console.log(evt.data);
         var msg = JSON.parse(evt.data)
-        if (msg.to === msg.from && msg.content === "issue id") {
+        if (msg.from === -1 && msg.content === "issue id") {
             document.getElementById("id").append("My ID: " + msg.to)
+        } else if (msg.from === -1 && msg.content === "PING") {
+            websocket.send(JSON.stringify({
+                "to": -1,
+                "content": "PONG"
+            }))
         } else if (msg.to === 0) {
             var item = document.createElement("div");
             item.innerHTML = "<strong>" + msg.from + "</strong> say to everyone: " + msg.content;
