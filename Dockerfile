@@ -1,5 +1,7 @@
 FROM golang:1.16-buster as build
 
+ENV GOPROXY="https://goproxy.io"
+
 WORKDIR /home/app
 
 COPY ./src .
